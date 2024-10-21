@@ -5,6 +5,8 @@ import Profile from "./routes/profile";
 import Login from "./routes/Login";
 import CreateAccount from "./routes/CreateAccount";
 import { createGlobalStyle } from "styled-components";
+import { useEffect, useState } from "react";
+import LoadingScreen from "./components/loading-screen";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -15,7 +17,7 @@ const router = createBrowserRouter([
         element: <Home />
       },
       {
-        path: "profile",
+        path: "/profile",
         element: <Profile />
       },
       {
@@ -34,15 +36,21 @@ const GlobalStyles = createGlobalStyle`
   body {
     background-color:black;
     color:white;
-
   }
 `;
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  const init = async () => {
+    setTimeout(() => setIsLoading(false), 2000);
+  };
+  useEffect(() => {
+    init();
+  }, []);
   return (
     <>
       <GlobalStyles />
-      <RouterProvider router={router} />
+      {isLoading ? <LoadingScreen /> : <RouterProvider router={router} />}
     </>
   );
 }
