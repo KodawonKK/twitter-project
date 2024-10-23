@@ -1,3 +1,4 @@
+// App.tsx
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./components/layout";
 import Home from "./routes/Home";
@@ -7,6 +8,9 @@ import CreateAccount from "./routes/CreateAccount";
 import { createGlobalStyle } from "styled-components";
 import { useEffect, useState } from "react";
 import LoadingScreen from "./components/loading-screen";
+import { auth } from "./firebase"; // firebase.tsx에서 auth를 가져옴
+import { onAuthStateChanged } from "firebase/auth";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -41,12 +45,22 @@ const GlobalStyles = createGlobalStyle`
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const init = async () => {
-    setTimeout(() => setIsLoading(false), 2000);
+
+  const init = () => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("User is logged in", user);
+      } else {
+        console.log("User is not logged in");
+      }
+      setTimeout(() => setIsLoading(false), 2000);
+    });
   };
+
   useEffect(() => {
     init();
   }, []);
+
   return (
     <>
       <GlobalStyles />
